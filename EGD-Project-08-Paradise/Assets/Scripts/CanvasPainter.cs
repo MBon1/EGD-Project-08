@@ -32,7 +32,7 @@ public class CanvasPainter : TileMapPainter
         {
             Erase();
         }
-        else if (Input.GetKeyDown(KeyCode.KeypadEnter))
+        else if (Input.GetKeyDown(KeyCode.Return))
         {
             Debug.Log(Score());
         }
