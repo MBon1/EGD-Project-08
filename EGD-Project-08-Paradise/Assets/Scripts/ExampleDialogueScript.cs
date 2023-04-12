@@ -136,7 +136,7 @@ public class ExampleDialogueScript : MonoBehaviour
         mapPainters[2].gameObject.transform.parent.gameObject.SetActive(true);
         mapPainters[2].enablePainting = true;
         mapPainters[2].completionCondition = 2;
-        StartCoroutine(((CanvasPainter)mapPainters[2]).TimedPaint(10));
+        StartCoroutine(((CanvasPainter)mapPainters[2]).TimedPaint(30));
     }
 
 
@@ -160,11 +160,12 @@ public class ExampleDialogueScript : MonoBehaviour
         dialogueList.Add(new Dialogue { speakerName = "", text = "You crawled your way to the medicine cabinate and reached for the pain killers." });
         dialogueList.Add(new Dialogue { speakerName = "", text = "The bottle knocks over. Oh, well." });
         dialogueList.Add(new Dialogue { speakerName = "", text = "You grab a hand full of pills." });
-        dialogueList.Add(new Dialogue { speakerName = "You", text = "Another day... in Paradise." });
+        dialogueList.Add(new Dialogue { speakerName = "You", text = "Another day..." });
         dialogueList.Add(new Dialogue { speakerName = "", text = "You're already late for class. With what little energy you have you stumble your way to class." });
         dialogueList.Add(new Dialogue { speakerName = "", text = "... ... ..." });
         dialogueList.Add(new Dialogue { speakerName = "", text = "... ... ..." });
         dialogueList.Add(new Dialogue { speakerName = "", text = "... ... ..." });
+        dialogueList.Add(new Dialogue { speakerName = "", text = "You realize something's wrong with your people, but you don't have enough time to do anything." });
         dialogueList.Add(new Dialogue { speakerName = "Instructor", text = "This is far from perfection." });
         dialogueList.Add(new Dialogue { speakerName = "", text = "The instructor looks crossed at you." });
         dialogueList.Add(new Dialogue { speakerName = "You", text = "But I..." });
@@ -182,9 +183,6 @@ public class ExampleDialogueScript : MonoBehaviour
         dialogueList.Add(new Dialogue { speakerName = "", text = "... ... ..." });
         dialogueList.Add(new Dialogue { speakerName = "", text = "... ... ..." });
         dialogueList.Add(new Dialogue { speakerName = "", text = "Paraside is lost." });
-        dialogueList.Add(new Dialogue { speakerName = "", text = "Earth's become Hell." });
-        dialogueList.Add(new Dialogue { speakerName = "", text = "And I pray to God, who I hope is there," });
-        dialogueList.Add(new Dialogue { speakerName = "", text = "That there be a Heaven after...." });
         dialogueManager.StartDialogue(dialogueList, new DialogueManager.StartDel(EnablePeopleStart), new DialogueManager.EndDel(EnablePeopleCanvas));
     }
 
@@ -196,11 +194,17 @@ public class ExampleDialogueScript : MonoBehaviour
 
     IEnumerator KillOff()
     {
-        foreach(SpriteRenderer renderer in people)
+        int count = 0;
+        yield return new WaitForSeconds(12.5f);
+        foreach (SpriteRenderer renderer in people)
         {
-            yield return new WaitForSeconds(0.5f);
+            if (count == people.Length / 5)
+            {
+                continue;
+            }
             renderer.sprite = null;
-            yield return new WaitForSeconds(0.75f);
+            yield return new WaitForSeconds(Random.Range(1.25f, 2f));
+            count++;
         }
     }
 
