@@ -8,9 +8,9 @@ public class TileMapPainter : MonoBehaviour
     public Tilemap tilemap; // Reference to the tile map
     public TileBase[] tiles; // Array of tiles to paint with
 
-    Vector2 mouseWorldPos = Vector2.zero;
+    protected Vector2 mouseWorldPos = Vector2.zero;
 
-    private void Start()
+    void Start()
     {
         //Paint();
     }
@@ -38,10 +38,5 @@ public class TileMapPainter : MonoBehaviour
             int tileIndex = Random.Range(0, tiles.Length); // Choose a random tile from the array
             tilemap.SetTile(cellPos, tiles[tileIndex]);
         }
-    }
-
-    void SetBrushColor()
-    {
-
     }
 }
