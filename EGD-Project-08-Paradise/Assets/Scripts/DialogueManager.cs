@@ -5,12 +5,16 @@ using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
+    public GameObject textbox;
+
     public Text nameText;
     public Text dialogueText;
+
     public float textSpeed = 0.05f; // Speed at which characters appear on screen
 
     private Queue<Dialogue> dialogueQueue;
-
+    private bool isTyping = false; // Whether the dialogue is currently being typed out
+    private string currentSentence = ""; // The current sentence being typed out
     private Coroutine typingCoroutine;
 
     void Awake()
@@ -27,11 +31,22 @@ public class DialogueManager : MonoBehaviour
             dialogueQueue.Enqueue(dialogue);
         }
 
+        textbox.SetActive(true);
+
         DisplayNextDialogue();
     }
 
     public void DisplayNextDialogue()
     {
+        if (isTyping)
+        {
+            // If dialogue is still being typed out, finish typing it out before displaying next dialogue
+            StopCoroutine(typingCoroutine);
+            dialogueText.text = currentSentence;
+            isTyping = false;
+            return;
+        }
+
         if (dialogueQueue.Count == 0)
         {
             EndDialogue();
@@ -40,27 +55,34 @@ public class DialogueManager : MonoBehaviour
 
         Dialogue dialogue = dialogueQueue.Dequeue();
         nameText.text = dialogue.speakerName;
-
-        if (typingCoroutine != null)
-        {
-            StopCoroutine(typingCoroutine);
-        }
-        typingCoroutine = StartCoroutine(TypeSentence(dialogue.text));
+        currentSentence = dialogue.text;
+        typingCoroutine = StartCoroutine(TypeSentence(currentSentence));
     }
 
     IEnumerator TypeSentence(string sentence)
     {
+        isTyping = true;
         dialogueText.text = "";
         foreach (char letter in sentence.ToCharArray())
         {
             dialogueText.text += letter;
             yield return new WaitForSeconds(textSpeed);
         }
+        isTyping = false;
     }
 
     void EndDialogue()
     {
         Debug.Log("End of conversation");
+        textbox.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            DisplayNextDialogue();
+        }
     }
 }
 
