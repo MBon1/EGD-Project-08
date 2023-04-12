@@ -1175,6 +1175,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2ded991a4d614dc4e986a2e0b7610bf2, type: 2}
   - {fileID: 11400000, guid: 9f774322159dd2743b7a0ca6a7c030aa, type: 2}
   - {fileID: 11400000, guid: f4990b30172f5234fa17e1057742cbdc, type: 2}
+  paletteColors:
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 1, g: 0, b: 0, a: 0}
+  - {r: 0, g: 0.69411767, b: 0, a: 0}
+  - {r: 0, g: 0, b: 1, a: 0}
+  - {r: 1, g: 0.8470589, b: 0, a: 0}
+  - {r: 0.77647066, g: 0.29803923, b: 1, a: 0}
+  - {r: 1, g: 0.4156863, b: 0, a: 0}
   stencil: {fileID: 1035083905}
   palette: {fileID: 2102765531}
   canvasBounds: {x: 8, y: 8}

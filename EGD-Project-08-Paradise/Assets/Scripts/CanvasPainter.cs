@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class CanvasPainter : TileMapPainter
 {
+    public Color[] paletteColors;
     public Tilemap stencil;
     public Tilemap palette;
     TileBase brush;
