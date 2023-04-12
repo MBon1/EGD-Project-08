@@ -5,7 +5,8 @@ using UnityEngine.Tilemaps;
 
 public class CanvasPainter : TileMapPainter
 {
-    public Tilemap palette; // Reference to the palette tile map
+    public Tilemap stencil;
+    public Tilemap palette;
     TileBase brush;
 
     public Vector2Int canvasBounds = new Vector2Int(16, 16);
@@ -31,13 +32,15 @@ public class CanvasPainter : TileMapPainter
         {
             Erase();
         }
+        else if (Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            Debug.Log(Score());
+        }
     }
 
     void Paint()
     {
         Vector3Int cellPos = tilemap.WorldToCell(mouseWorldPos);
-
-        Debug.Log(cellPos);
 
         if (Mathf.Abs(cellPos.x) < canvasBounds.x && Mathf.Abs(cellPos.y) < canvasBounds.y && !tilemap.HasTile(cellPos)) // If there is already a tile in this cell, remove it
         {
@@ -78,5 +81,32 @@ public class CanvasPainter : TileMapPainter
                 palette.SetTile(cellPos, brush);
             }
         }
+    }
+
+    public float Score()
+    {
+        float score = 0;
+        int tileCount = 0;
+        Vector3Int origin = new Vector3Int(-canvasBounds.x, -canvasBounds.y, 0);
+        for (int i = 0; i < canvasBounds.x * 2; i++)
+        {
+            for (int j = 0; j < canvasBounds.y * 2; j++)
+            {
+                Vector3Int cellPos = origin;
+                cellPos.x += i;
+                cellPos.y += j;
+
+                TileBase stencilTile = stencil.GetTile<TileBase>(cellPos);
+                TileBase drawnTile = tilemap.GetTile<TileBase>(cellPos);
+                
+                if (stencilTile == drawnTile)
+                {
+                    score += 1;
+                }
+                tileCount++;
+            }
+        }
+
+        return score / tileCount;
     }
 }
