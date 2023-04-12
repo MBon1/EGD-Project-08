@@ -39,4 +39,9 @@ public class TileMapPainter : MonoBehaviour
             tilemap.SetTile(cellPos, tiles[tileIndex]);
         }
     }
+
+    void SetBrushColor()
+    {
+
+    }
 }
