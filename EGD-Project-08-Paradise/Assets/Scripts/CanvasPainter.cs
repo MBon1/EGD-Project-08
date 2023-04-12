@@ -16,6 +16,13 @@ public class CanvasPainter : TileMapPainter
 
     public Sprite Drawing { get; private set; }
 
+    public SpriteRenderer[] spriteRenderers;
+    public float drawSpeed = 0.05f;
+    public GameObject canvas;
+
+    float taskScore = 0;
+
+
     private void Start()
     {
         brush = tiles[0];
@@ -30,6 +37,9 @@ public class CanvasPainter : TileMapPainter
 
     void Update()
     {
+        if (!enablePainting)
+            return;
+
         mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift))
         {
@@ -45,7 +55,8 @@ public class CanvasPainter : TileMapPainter
         }
         else if (Input.GetKeyDown(KeyCode.Return))
         {
-            Debug.Log(Score());
+            Score();
+            Debug.Log(taskScore);
         }
     }
 
@@ -96,7 +107,7 @@ public class CanvasPainter : TileMapPainter
         }
     }
 
-    public float Score()
+    public void Score()
     {
         float score = 0;
         int tileCount = 0;
@@ -120,9 +131,8 @@ public class CanvasPainter : TileMapPainter
             }
         }
 
+        taskScore = score / tileCount;
         drawing();
-        
-        return score / tileCount;
     }
 
     private void drawing()
@@ -170,7 +180,9 @@ public class CanvasPainter : TileMapPainter
         Drawing = Sprite.Create(scaledTexture, new Rect(0, 0, scaledTexture.width, scaledTexture.height), Vector2.zero);
 
         // Assign the sprite to a sprite renderer component
-        GetComponent<SpriteRenderer>().sprite = Drawing;
+        //GetComponent<SpriteRenderer>().sprite = Drawing;
+
+        StartCoroutine(RenderSprites());
     }
 
     private Texture2D ScaleTexture(Texture2D texture, int scaleFactor)
@@ -185,27 +197,35 @@ public class CanvasPainter : TileMapPainter
         result.ReadPixels(new Rect(0, 0, targetX, targetY), 0, 0);
         result.Apply();
         return result;
+    }
 
-        /*// Calculate the new dimensions for the scaled texture
-        int newWidth = texture.width * scaleFactor;
-        int newHeight = texture.height * scaleFactor;
+    IEnumerator RenderSprites()
+    {
+        canvas.SetActive(false);
+        enablePainting = false;
 
-        // Create a new texture with the desired dimensions
-        Texture2D scaledTexture = new Texture2D(newWidth, newHeight);
-
-        for (int i = 0; i < newWidth; i++)
+        foreach (SpriteRenderer renderer in spriteRenderers)
         {
-            for (int j = 0; j < newHeight; j++)
-            {
-                int x = Mathf.FloorToInt(i / (float)scaleFactor);
-                int y = Mathf.FloorToInt(j / (float)scaleFactor);
-                Color c = texture.GetPixel(x, y);
-                
-                scaledTexture.SetPixel(i, j, c);
-            }
+            renderer.sprite = Drawing;
+            yield return new WaitForSeconds(drawSpeed);
         }
-        texture.Apply();
+        yield return new WaitForSeconds(1f);
 
-        return scaledTexture;*/
+        if (completionCondition == 1)
+        {
+            dialogueScript.BuildingsAdded(taskScore);
+        }
+        if (completionCondition == 2)
+        {
+            dialogueScript.PeopleAdded(spriteRenderers);
+        }
+    }
+
+    public IEnumerator TimedPaint(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        enablePainting = false;
+        Score();
+        Debug.Log(taskScore);
     }
 }

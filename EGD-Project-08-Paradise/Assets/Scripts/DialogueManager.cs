@@ -17,12 +17,17 @@ public class DialogueManager : MonoBehaviour
     private string currentSentence = ""; // The current sentence being typed out
     private Coroutine typingCoroutine;
 
+    public delegate void StartDel();
+    public delegate void EndDel();
+
+    EndDel endDel;
+
     void Awake()
     {
         dialogueQueue = new Queue<Dialogue>();
     }
 
-    public void StartDialogue(List<Dialogue> dialogueList)
+    public void StartDialogue(List<Dialogue> dialogueList, StartDel startDel, EndDel end)
     {
         dialogueQueue.Clear();
 
@@ -32,6 +37,9 @@ public class DialogueManager : MonoBehaviour
         }
 
         textbox.SetActive(true);
+
+        startDel();
+        endDel = end;
 
         DisplayNextDialogue();
     }
@@ -75,6 +83,7 @@ public class DialogueManager : MonoBehaviour
     {
         Debug.Log("End of conversation");
         textbox.SetActive(false);
+        endDel();
     }
 
     void Update()

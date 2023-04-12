@@ -5,8 +5,12 @@ using UnityEngine.Tilemaps;
 
 public class TileMapPainter : MonoBehaviour
 {
+    public ExampleDialogueScript dialogueScript;
+    public int completionCondition = 0;
+    public bool enablePainting = true;
     public Tilemap tilemap; // Reference to the tile map
     public TileBase[] tiles; // Array of tiles to paint with
+    public TileBase dirtTile;
 
     protected Vector2 mouseWorldPos = Vector2.zero;
 
@@ -17,6 +21,17 @@ public class TileMapPainter : MonoBehaviour
 
     void Update()
     {
+        if (!enablePainting)
+            return;
+
+        if (completionCondition == 0)
+        {
+            if (!tilemap.ContainsTile(dirtTile))
+            {
+                dialogueScript.GrassPlanted();
+            }
+        }
+
         if (Input.GetMouseButton(0)) // Left mouse button is pressed
         {
             mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
