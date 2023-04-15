@@ -9,6 +9,9 @@ public class DialogueManager : MonoBehaviour
 
     public Text nameText;
     public Text dialogueText;
+    public GameObject background;
+    public Image backgroundImage;
+    public Sprite[] backgrounds;
 
     public float textSpeed = 0.05f; // Speed at which characters appear on screen
 
@@ -62,9 +65,26 @@ public class DialogueManager : MonoBehaviour
         }
 
         Dialogue dialogue = dialogueQueue.Dequeue();
-        nameText.text = dialogue.speakerName;
-        currentSentence = dialogue.text;
-        typingCoroutine = StartCoroutine(TypeSentence(currentSentence));
+        if (dialogue.speakerName == "Background")
+        {
+            int backgroundId = int.Parse(dialogue.text);
+            if (backgroundId <= 0)
+            {
+                background.SetActive(false);
+            }
+            else
+            {
+                background.SetActive(true);
+                backgroundImage.sprite = backgrounds[backgroundId];
+            }
+            DisplayNextDialogue();
+        }
+        else
+        {
+            nameText.text = dialogue.speakerName;
+            currentSentence = dialogue.text;
+            typingCoroutine = StartCoroutine(TypeSentence(currentSentence));
+        }
     }
 
     IEnumerator TypeSentence(string sentence)
